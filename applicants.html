@@ -6,6 +6,83 @@
     <title>Вступникам - ЦДУ імені Володимира Винниченка</title>
     <link rel="stylesheet" href="style.css">
 </head>
+<script>
+// Мобільне меню
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const nav = document.querySelector('nav');
+    
+    if (mobileMenuBtn && nav) {
+        // Відкриття/закриття меню
+        mobileMenuBtn.addEventListener('click', function() {
+            nav.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+            
+            // Зміна іконки
+            this.textContent = nav.classList.contains('active') ? '✕' : '☰';
+        });
+        
+        // Закриття меню при кліку на оверлей
+        menuOverlay.addEventListener('click', function() {
+            nav.classList.remove('active');
+            this.classList.remove('active');
+            document.body.style.overflow = '';
+            mobileMenuBtn.textContent = '☰';
+        });
+        
+        // Закриття меню при кліку на посилання (на мобільних)
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function() {
+                nav.classList.remove('active');
+                menuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                mobileMenuBtn.textContent = '☰';
+            });
+        });
+        
+        // Закриття меню при зміні орієнтації екрана
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                if (window.innerWidth > 768) {
+                    nav.classList.remove('active');
+                    menuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    mobileMenuBtn.textContent = '☰';
+                }
+            }, 300);
+        });
+    }
+    
+    // Плавний скрол для якорних посилань
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Автоматичне закриття клавіатури на мобільних при відправці форми
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function() {
+            if (window.innerWidth <= 768) {
+                document.activeElement.blur();
+            }
+        });
+    });
+});
+</script>
 <body>
     <header>
         <div class="container">
@@ -26,6 +103,11 @@
         </div>
     </header>
 
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Відкрити меню">
+    ☰
+    </button>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
     <main>
         <section class="page-header">
             <div class="container">
